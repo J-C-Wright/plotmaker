@@ -26,7 +26,7 @@
       "title": "p_{t}(jet_{1})"
     },
     "dijet_SubJPt": {
-      "hist": "(60,15,265)",
+      "hist": "(50,15,265)",
       "cut": "dijet_SubJPt>20",
       "blind": "",
       "log": false,
@@ -124,6 +124,22 @@
       "norm": false,
       "title": "#Delta#phi(jj,#gamma#gamma)_{trunc}"
     },
+    "dijet_dipho_dphi": {
+      "hist": "(30,0,3.1415)",
+      "cut": "",
+      "blind": "",
+      "log": false,
+      "norm": false,
+      "title": "#Delta#phi(jj,#gamma#gamma)"
+    },
+    "dijet_dPhi_trunc": {
+      "hist": "(30,0,3)",
+      "cut": "",
+      "blind": "",
+      "log": false,
+      "norm": false,
+      "title": "#Delta#phi(jj)_{trunc}"
+    },
     "dipho_lead_ptoM": {
       "hist": "(25,0,2)",
       "cut": "dipho_lead_ptoM>(1/2.)",
@@ -157,7 +173,7 @@
       "title": "p_{t}(#gamma_2)"
     },
     "dipho_mass": {
-      "hist" : "(80,100,180)",
+      "hist" : "(50,100,180)",
       "cut"  : "(dipho_mass>100 && dipho_mass<180)",
       "blind": "",
       "log"  : true,
@@ -175,7 +191,7 @@
       "title": "BDT_{jj}"
     },
     "dipho_dijet_MVA": {
-      "hist" : "(1000,-1,1)",
+      "hist" : "(50,-1,1)",
     //  "cut"  : "dipho_dijet_MVA>0.92",
       "blind": "",
       "log"  : true,
@@ -191,6 +207,51 @@
       "norm" : false,
       "unit" : "",
       "title": "BDT_{#gamma#gamma}"
+    },
+    "dijet_jet1_QGL":{
+      "hist" : "(50,0,1)",
+      "cut"  : "",
+      "blind": "",
+      "log"  : false,
+      "norm" : false,
+      "unit" : "",
+      "title": "QGL_{Lead}"
+    },
+    "dijet_jet2_QGL":{
+      "hist" : "(50,0,1)",
+      "cut"  : "",
+      "blind": "",
+      "log"  : false,
+      "norm" : false,
+      "unit" : "",
+      "title": "QGL_{Sub}"
+    },
+    "dijet_jet1_RMS":{
+      "hist" : "(50,0,0.1)",
+      "cut"  : "",
+      "blind": "",
+      "log"  : false,
+      "norm" : false,
+      "unit" : "",
+      "title": "RMS_{Lead}"
+    },
+    "dijet_jet2_RMS":{
+      "hist" : "(50,0,0.1)",
+      "cut"  : "",
+      "blind": "",
+      "log"  : false,
+      "norm" : false,
+      "unit" : "",
+      "title": "RMS_{Sub}"
+    },
+    "dijet_minDRJetPho":{
+      "hist" : "(50,0,5)",
+      "cut"  : "",
+      "blind": "",
+      "log"  : false,
+      "norm" : false,
+      "unit" : "",
+      "title": "min(#Delta{R}(J#gamma))"
     },
     "nvtx": {
       "hist"  : "(40,0,40)",
@@ -221,7 +282,19 @@
   "scatter" :{
       "xlist"   : [
         /*"dipho_mass",*/
-        "dipho_dijet_MVA"
+        /*"dipho_dijet_MVA"*/
+        "dijet_LeadJPt",
+        "dijet_SubJPt",
+        "dijet_leadEta",
+        "dijet_subleadEta",
+        "dijet_Mjj",
+        "dijet_abs_dEta",
+        "dijet_Zep",
+        "dijet_dPhi_trunc",
+        "dijet_dipho_dphi",
+        "dijet_jet1_QGL",
+        "dijet_jet2_QGL",
+        "dijet_minDRJetPho"
       ],
       "ylist"   : [
         /*"dipho_dijet_MVA",*/

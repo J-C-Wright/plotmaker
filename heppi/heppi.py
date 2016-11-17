@@ -474,9 +474,9 @@ class instack ():
                                 self.samples[proc].label   ,
                                 self.samples[proc].cut     ,
                                 self.samples[proc].root_tree.GetEntries()])
-        logger.info("\n" + tabulate(_samples_,
-                                    ["","sample","tree","kfactor","label","cut","events"],
-                                    tablefmt="psql"))
+#        logger.info("\n" + tabulate(_samples_,
+#                                    ["","sample","tree","kfactor","label","cut","events"],
+#                                    tablefmt="psql"))
     # ---- create a cut flow except the considered variables
     def variable_cutflow(self, variable, select=''):
         cutflow = ''
@@ -503,9 +503,9 @@ class instack ():
         for key,var in self.variables.items():
             if var.cut == "" : continue
             _tab_cuts_.append([key, var.cut])
-        logger.info("\n" + tabulate(_tab_cuts_,
-                    ["variable","cuts"],
-                    tablefmt="psql"))
+#        logger.info("\n" + tabulate(_tab_cuts_,
+#                    ["variable","cuts"],
+#                    tablefmt="psql"))
     #---------------------------------------------------------
     def print_systematics(self):
         for key,sample in self.samples.items():
@@ -523,9 +523,9 @@ class instack ():
                                     up ,
                                     dw
                                    ])
-            logger.info("\n" + tabulate(_tab_cuts_,
-                        ["sys: ", "sample","Nevt up", "Nevt down"],
-                        tablefmt="psql"))
+#            logger.info("\n" + tabulate(_tab_cuts_,
+#                        ["sys: ", "sample","Nevt up", "Nevt down"],
+#                        tablefmt="psql"))
     #---------------------------------------------------------
     def print_cutflow(self, format="psql" ):
         _header_  = ["cutflow"]
@@ -562,7 +562,7 @@ class instack ():
                     _selec_.append(sample.root_tree.GetEntries(_cut_))
                     _selec_.append(100*sample.root_tree.GetEntries(_cut_)/float(tot_events))
                 _table_.append(_selec_)
-        logger.info("\n" + tabulate(_table_, _header_,tablefmt=format,floatfmt=".2f"))
+#        logger.info("\n" + tabulate(_table_, _header_,tablefmt=format,floatfmt=".2f"))
     #---------------------------------------------------------
     def makeRatioCanvas(name='_ratio_'):
         """returns a divided canvas for ratios"""
@@ -1011,7 +1011,7 @@ class instack ():
             variable.root_legend.AddEntry(herrstat, "Stat Uncert", "f" )
 
         # cosmetics
-        utils.draw_cut_line(_htmp_,variable,'x')
+#        utils.draw_cut_line(_htmp_,variable,'x')
         self.draw_categories(variable.boundaries, miny=_htmp_.GetMinimum(),maxy=_htmp_.GetMaximum())
         ROOT.gPad.RedrawAxis()
         # this is for the legend
