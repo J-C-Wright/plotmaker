@@ -346,14 +346,14 @@
 	//    "up_tree"   : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_JERUp01sigma",
 	//    "down_tree" : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_JERDown01sigma"
 	//}
-	"SigmaEoverEShift": {
-	    "up_tree"   : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_SigmaEOverEShiftUp01sigma",
-	    "down_tree" : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_SigmaEOverEShiftDown01sigma"
-	},
-	"MvaShift": {
-	    "up_tree"   : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_MvaShiftUp01sigma",
-	    "down_tree" : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_MvaShiftDown01sigma"
-	}
+        "SigmaEoverEShift": {
+            "up_tree"   : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_SigmaEOverEShiftUp01sigma",
+            "down_tree" : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_SigmaEOverEShiftDown01sigma"
+        },
+        "MvaShift": {
+            "up_tree"   : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_MvaShiftUp01sigma",
+            "down_tree" : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_MvaShiftDown01sigma"
+        }
     },
     "options": {
         "label": [
@@ -361,10 +361,12 @@
             "70 < m_{ee} < 110 GeV"
         ],
         "treename": "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet",
-        "intlumi": 36.8,
-        "kfactor": 0.885,
-        "ratio_range": [0,2],
-	"ratio_type" : "default",
+        //"intlumi": 36.814,
+        //"kfactor": 0.9345,
+        "intlumi": 35.87,
+        "kfactor": 0.95,
+        "ratio_range": [-1,1],
+	"ratio_type" : "centred",
 	"categories" : [
 	    {
 		"name":"inclusive" ,

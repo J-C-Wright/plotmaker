@@ -80,13 +80,15 @@ class utils:
                         line.DrawLine(xmin,cut,xmax,cut)
                 else:
                     line.DrawLine(xmin,cut,xmax,cut)
+
+
     @staticmethod
     def draw_labels(label, position='top'):
         t = ROOT.TLatex()
         t.SetTextAlign(12)
         t.SetTextFont (settings.text_font)
         t.SetTextSize (settings.text_size)
-        shift = 0
+        shift = 0.0
         lines = []
         ystart = 0.95
         if position == 'top'    : ystart = 0.95
@@ -109,12 +111,12 @@ class utils:
         tex_left  = ROOT.TLatex()
         tex_left.SetTextAlign (11);
         tex_left.SetTextFont  (42);
-        tex_left.SetTextSize  (0.036);
+        tex_left.SetTextSize  (0.045);
         tex_right = ROOT.TLatex()
         tex_right.SetTextAlign(31);
         tex_right.SetTextFont (42);
-        tex_right.SetTextSize (0.036);
-        tex_left.DrawLatexNDC (0.14,
+        tex_right.SetTextSize (0.045);
+        tex_left.DrawLatexNDC (0.25,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_left)
         tex_right.DrawLatexNDC(1-0.05,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_right)
@@ -124,12 +126,12 @@ class utils:
         tex_left  = ROOT.TLatex()
         tex_left.SetTextAlign (11);
         tex_left.SetTextFont  (42);
-        tex_left.SetTextSize  (0.036);
+        tex_left.SetTextSize  (0.045);
         tex_right = ROOT.TLatex()
         tex_right.SetTextAlign(31);
         tex_right.SetTextFont (42);
-        tex_right.SetTextSize (0.036);
-        tex_left.DrawLatexNDC (0.15,
+        tex_right.SetTextSize (0.045);
+        tex_left.DrawLatexNDC (0.25,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_left)
         tex_right.DrawLatexNDC(1-0.11,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_right)
@@ -832,17 +834,17 @@ class instack ():
         return c
     #---------------------------------------------------------
     def customizeHisto(self, hist):
-        hist.GetYaxis().SetTitleSize  (21)
+        hist.GetYaxis().SetTitleSize  (28)
         hist.GetYaxis().SetTitleFont  (43  )
-        hist.GetYaxis().SetTitleOffset(1.8 )
+        hist.GetYaxis().SetTitleOffset(2.1 )
         hist.GetYaxis().SetLabelFont  (43  )
-        hist.GetYaxis().SetLabelSize  (18  )
-        hist.GetXaxis().SetTitleSize  (21  )
+        hist.GetYaxis().SetLabelSize  (25  )
+        hist.GetXaxis().SetTitleSize  (28  )
         hist.GetXaxis().SetTitleFont  (43  )
-        hist.GetXaxis().SetTitleOffset(3.5 )
+        hist.GetXaxis().SetTitleOffset(3.4 )
         hist.GetXaxis().SetLabelOffset(0.02)
         hist.GetXaxis().SetLabelFont  (43)
-        hist.GetXaxis().SetLabelSize  (18)
+        hist.GetXaxis().SetLabelSize  (25)
     #---------------------------------------------------------
     def test_tree_book():
         for sam in samples:
@@ -875,7 +877,7 @@ class instack ():
             variable.root_legend.SetNColumns(2)
             variable.root_legend.SetColumnSeparation(0)
         else:
-            variable.root_legend  = ROOT.TLegend(0.6, 0.62,
+            variable.root_legend  = ROOT.TLegend(0.5, 0.52,
                                         (1.00 - ROOT.gStyle.GetPadRightMargin()),
                                         (0.96 - ROOT.gStyle.GetPadTopMargin()))
 
@@ -933,7 +935,11 @@ class instack ():
             if variable.norm and hist.Integral()!=0:
                 hist.Sumw2()
                 hist.Scale(1.0/hist.Integral())
-            if hist.Integral() == 0 : logger.warning(' The Integral of the histogram is null, please check this variable: %s' % varkey)
+
+            if hist.Integral() == 0 : 
+                logger.warning(' The Integral of the histogram is null, please check this variable: %s and this histo %s (%s)' % (varkey,hist.GetName(),sample.name))
+                print _cutflow_
+
             if 'background' in sample.label.lower():
                 for key,syst in sample.systematics.items() :
                     for _sys_flip_ in ['up','down']:
@@ -997,7 +1003,7 @@ class instack ():
         ROOT.SetOwnership(_htmp_,0)
         bounds = [float(s) for s in re.findall('[-+]?\d*\.\d+|\d+',variable.hist )]
         _htmp_.SetTitle(';' + variable.title
-                       + (';events / %s %s '% (utils.fformat((bounds[2]-bounds[1])/bounds[0], variable.unit != ""),
+                       + (';Events  %s %s '% (utils.fformat((bounds[2]-bounds[1])/bounds[0], variable.unit != ""),
                                                variable.unit) ))
         _htmp_.Reset()
         _ymax_ = max([x.GetMaximum() for x in variable.root_histos])
@@ -1011,12 +1017,19 @@ class instack ():
                 _ymin_ = (0.01 - 0.003) if _ymin_ <= 0 else _ymin_
                 _ymax_ = hstack.GetMaximum()*1000
 
+            #_ymin_ = 1e-2
+            #hack
+            #_ymin_ = 0.001
+            _ymin_,_ymax_ = 10,1e7
             _htmp_.GetYaxis().SetRangeUser(_ymin_,_ymax_)
             ROOT.gPad.SetLogy()
         else:
             _ymin_ = 0
             _ymax_ = _ymax_ + _ymax_ * 0.5
+            #hack
+            _ymin_ = 0.001
             _htmp_.GetYaxis().SetRangeUser(_ymin_,_ymax_)
+
 
         self.customizeHisto(_htmp_)
         _htmp_.Draw('hist')
@@ -1042,18 +1055,25 @@ class instack ():
             if 'signal' in h.GetName() or 'spectator' in h.GetName():
                 h.Draw('hist,same')
         if len(self.systematics)>0:
-            variable.root_legend.AddEntry(herrsyst, "Stat #oplus Syst", "f" )
+#            variable.root_legend.AddEntry(herrsyst, "Stat #oplus Syst", "f" )
+            variable.root_legend.AddEntry(herrsyst, "MC Stat. #oplus Syst.", "f" )
         else:
-            variable.root_legend.AddEntry(herrstat, "Stat Uncert", "f" )
+            variable.root_legend.AddEntry(herrstat, "MC Stat. Uncert.", "f" )
 
         # cosmetics
         utils.draw_cut_line(_htmp_,variable,'x')
         self.draw_categories(variable.boundaries, miny=_htmp_.GetMinimum(),maxy=_htmp_.GetMaximum())
         ROOT.gPad.RedrawAxis()
+
+        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, 1e7)#385000)        
+        #print "test : ", _htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, _htmp_.GetYaxis().GetXmax()
+        bb.SetFillColor(1)
+        bb.SetFillColorAlpha(1,0.2)
+        bb.Draw("same")
         # this is for the legend
         variable.root_legend.SetTextAlign( 12 )
         variable.root_legend.SetTextFont ( 43 )
-        variable.root_legend.SetTextSize ( 18 )
+        variable.root_legend.SetTextSize ( 21 )
         variable.root_legend.SetLineColor( 0 )
         variable.root_legend.SetFillColor( 0 )
         variable.root_legend.SetFillStyle( 0 )
@@ -1062,7 +1082,9 @@ class instack ():
         variable.root_legend.Draw()
         # draw labels
         utils.draw_labels(self.options.label)
-        utils.draw_cms_headlabel( label_right='#sqrt{s} = 13 TeV, L = %1.2f fb^{-1}' % self.options.intlumi )
+        utils.draw_cms_headlabel( label_right='#sqrt{s} = 13 TeV, L = %1.1f fb^{-1}' % self.options.intlumi )
+        
+        
         #
         c.cd()
         c.cd(2)
@@ -1151,6 +1173,7 @@ class instack ():
         else:
             logger.error("ratio plot option not defeined ... please choose betwen 'default' or 'centred' ")
         
+        
         self.draw_categories(variable.boundaries,
                     miny=_htmp_.GetMinimum(),
                     maxy=_htmp_.GetMaximum())
@@ -1169,7 +1192,7 @@ class instack ():
     def histogram(self, variable, type='signal', cut="", label=""):
         _cutflow_ = self.variable_cutflow(variable.name,'')
         _hist_ = ROOT.TH1F( 'htot_tree_' + type + '_' + variable.name +'_'+ label,
-                            variable.title + ';events',
+                            variable.title + ';Events',
                             int(variable.nbin),
                             float(variable.range[0]),
                             float(variable.range[1])
@@ -1465,7 +1488,7 @@ class instack ():
 
         variable_x.root_legend.SetTextAlign( 12 )
         variable_x.root_legend.SetTextFont ( 43 )
-        variable_x.root_legend.SetTextSize ( 18 )
+        variable_x.root_legend.SetTextSize ( 21 )
         variable_x.root_legend.SetLineColor( 0 )
         variable_x.root_legend.SetFillColor( 0 )
         variable_x.root_legend.SetFillStyle( 0 )
