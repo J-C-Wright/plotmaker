@@ -111,14 +111,14 @@ class utils:
         tex_left  = ROOT.TLatex()
         tex_left.SetTextAlign (11);
         tex_left.SetTextFont  (42);
-        tex_left.SetTextSize  (0.045);
+        tex_left.SetTextSize  (0.035);
         tex_right = ROOT.TLatex()
         tex_right.SetTextAlign(31);
         tex_right.SetTextFont (42);
-        tex_right.SetTextSize (0.045);
-        tex_left.DrawLatexNDC (0.25,
+        tex_right.SetTextSize (0.035);
+        tex_left.DrawLatexNDC (0.15,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_left)
-        tex_right.DrawLatexNDC(1-0.05,
+        tex_right.DrawLatexNDC(1-0.07,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_right)
     @staticmethod
     def scatter_cms_headlabel(label_left  ='#scale[1.2]{#bf{CMS}} #it{Preliminary}',
@@ -133,8 +133,8 @@ class utils:
         tex_right.SetTextSize (0.045);
         tex_left.DrawLatexNDC (0.25,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_left)
-        tex_right.DrawLatexNDC(1-0.11,
-                               1.01 - ROOT.gStyle.GetPadTopMargin(),label_right)
+        tex_right.DrawLatexNDC(1-0.107,
+                               1.1 - ROOT.gStyle.GetPadTopMargin(),label_right)
 class variable(object):
     """
     variable class contains all the infmation
@@ -834,25 +834,26 @@ class instack ():
         return c
     #---------------------------------------------------------
     def customizeHisto(self, hist, ratioplot = True):
-        hist.GetYaxis().SetTitleSize  (21)
+        hist.GetYaxis().SetTitleSize  (25)
         hist.GetYaxis().SetTitleFont  (43)
-        hist.GetYaxis().SetTitleOffset(1.8)
+        hist.GetYaxis().SetTitleOffset(2.0)
         hist.GetYaxis().SetLabelFont  (43)
-        hist.GetYaxis().SetLabelSize  (18)
+        hist.GetYaxis().SetLabelSize  (25)
+        ROOT.TGaxis.SetExponentOffset(-0.075,-0.02)
         if ratioplot :
-            hist.GetXaxis().SetTitleSize  (21)
+            hist.GetXaxis().SetTitleSize  (25)
             hist.GetXaxis().SetTitleFont  (43)
             hist.GetXaxis().SetTitleOffset(3.5)
             hist.GetXaxis().SetLabelOffset(0.02)
             hist.GetXaxis().SetLabelFont  (43)
-            hist.GetXaxis().SetLabelSize  (18)
+            hist.GetXaxis().SetLabelSize  (25)
         else:
-            hist.GetXaxis().SetTitleSize  (21)
+            hist.GetXaxis().SetTitleSize  (25)
             hist.GetXaxis().SetTitleFont  (43)
             hist.GetXaxis().SetTitleOffset(1.5)
             hist.GetXaxis().SetLabelOffset(0.01)
             hist.GetXaxis().SetLabelFont  (43)
-            hist.GetXaxis().SetLabelSize  (18)
+            hist.GetXaxis().SetLabelSize  (25)
     #---------------------------------------------------------
     def test_tree_book():
         for sam in samples:
@@ -885,7 +886,7 @@ class instack ():
             variable.root_legend.SetNColumns(2)
             variable.root_legend.SetColumnSeparation(0)
         else:
-            variable.root_legend  = ROOT.TLegend(0.5, 0.52,
+            variable.root_legend  = ROOT.TLegend(0.45, 0.7,
                                         (1.00 - ROOT.gStyle.GetPadRightMargin()),
                                         (0.96 - ROOT.gStyle.GetPadTopMargin()))
 
@@ -996,7 +997,8 @@ class instack ():
                 variable.root_histos.append(hist)
             if 'background' in sample.label:
                 hist.SetLineColor(ROOT.kBlack)
-                hist.SetFillColor(sample.color)
+                #hist.SetFillColor(sample.color)
+                hist.SetFillColorAlpha(sample.color,0.5)
                 hist.SetLineWidth(2)
                 hist.SetName(hist.GetName() + '_background')
                 hstack.Add(hist)
@@ -1021,7 +1023,7 @@ class instack ():
         ROOT.SetOwnership(_htmp_,0)
         bounds = [float(s) for s in re.findall('[-+]?\d*\.\d+|\d+',variable.hist )]
         _htmp_.SetTitle(';' + variable.title
-                       + (';Events  %s %s '% (utils.fformat((bounds[2]-bounds[1])/bounds[0], variable.unit != ""),
+                       + (';Events / %s %s '% (utils.fformat((bounds[2]-bounds[1])/bounds[0], variable.unit != ""),
                                                variable.unit) ))
         _htmp_.Reset()
         _ymax_ = max([x.GetMaximum() for x in variable.root_histos])
@@ -1064,6 +1066,12 @@ class instack ():
                 self.systematics[systematic_label].down_histo.Draw("same, hist")
             else:
                 herrsyst.Draw('E2,same')
+                _htmp_line_ = hstack.GetStack().Last().Clone("h_clone_for_line")
+                _htmp_line_.SetFillStyle( 0 )
+                _htmp_line_.SetLineColor(1)
+                _htmp_line_.Draw('hist,same')
+
+
         hdata = None
         for h in variable.root_histos:
             if 'data' in h.GetName():
@@ -1074,24 +1082,24 @@ class instack ():
                 h.Draw('hist,same')
         if len(self.systematics)>0:
 #            variable.root_legend.AddEntry(herrsyst, "Stat #oplus Syst", "f" )
-            variable.root_legend.AddEntry(herrsyst, "MC Stat. #oplus Syst.", "f" )
+            variable.root_legend.AddEntry(herrsyst, "Simulation Stat. #oplus Syst.", "f" )
         else:
-            variable.root_legend.AddEntry(herrstat, "MC Stat. Uncert.", "f" )
+            variable.root_legend.AddEntry(herrstat, "Simulation Stat. Uncert.", "f" )
 
         # cosmetics
         utils.draw_cut_line(_htmp_,variable,'x')
         self.draw_categories(variable.boundaries, miny=_htmp_.GetMinimum(),maxy=_htmp_.GetMaximum())
         ROOT.gPad.RedrawAxis()
 
-        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, 1e7)#385000)        
-        #print "test : ", _htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, _htmp_.GetYaxis().GetXmax()
-        bb.SetFillColor(1)
-        bb.SetFillColorAlpha(1,0.2)
-        bb.Draw("same")
+        #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, 1e7)
+        #bb.SetFillColor(1)
+        #bb.SetFillColorAlpha(1,0.2)
+        #bb.Draw("same")
+
         # this is for the legend
         variable.root_legend.SetTextAlign( 12 )
         variable.root_legend.SetTextFont ( 43 )
-        variable.root_legend.SetTextSize ( 21 )
+        variable.root_legend.SetTextSize ( 22 )
         variable.root_legend.SetLineColor( 0 )
         variable.root_legend.SetFillColor( 0 )
         variable.root_legend.SetFillStyle( 0 )
@@ -1101,7 +1109,8 @@ class instack ():
         # draw labels
         utils.draw_labels(self.options.label)
         # if (self.systematics.keys())>0 : self.options.label.pop()
-        utils.draw_cms_headlabel( label_left = '', label_right='#sqrt{s} = 13 TeV, L = %1.2f fb^{-1}' % self.options.intlumi )
+        utils.draw_cms_headlabel( label_right='%1.1f fb^{-1} (13 TeV)' % self.options.intlumi )
+        #utils.draw_cms_headlabel( label_left = '', label_right='%1.1f fb^{-1} (13 TeV)' % self.options.intlumi )
         #
         c.cd()
         if self.options.ratioplot :
@@ -1475,7 +1484,7 @@ class instack ():
 
 
         utils.draw_labels( self.options.label)
-        utils.scatter_cms_headlabel( label_right='#sqrt{s} = 13 TeV, L = %1.2f fb^{-1}' % self.options.intlumi )
+        utils.scatter_cms_headlabel( label_right='%1.1f fb^{-1} (13 TeV)' % self.options.intlumi )
 
         utils.draw_cut_line(scatter_sig,variable_x, axis='x')
         utils.draw_cut_line(scatter_sig,variable_y, axis='y')

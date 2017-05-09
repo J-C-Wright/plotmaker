@@ -35,12 +35,13 @@
 	
 	"dipho_mva_flat": {
             "hist" : "(50,0,1)",
-            "cut"  : "dipho_mva_flat>0.1",
-//            "cut"  : "",
+//            "cut"  : "dipho_mva_flat>0.1",
+            "cut"  : "",
             "blind": "",
             "log"  : false,
             "norm" : false,
-            "title": "diphoton MVA"
+            "title": "Diphoton MVA",
+            "boundaries":[0.107]
         },
 	
         "dipho_sublead_ptoM": {
@@ -409,10 +410,10 @@
     //},
     "processes": {
         "Zee": {
-            "color": 138,
-            "order": 0,
+            "color": 141,
+            "order": 1,
             "files" : "DY",
-            "title": "Z #rightarrow e^{+}e^{-} (MC)",
+            "title": "Z #rightarrow e^{+}e^{-} (Simulation)",
             "tree" : "DY",
             "cut"  : "",
             "label": "background"
@@ -420,7 +421,7 @@
         "Data": {
             "tree": "Data",
             "color": 1,
-            "order": 2,
+            "order": 0,
             "files": "SingleElectron",
             "cut"  : "",
             "title": "Data",
@@ -436,20 +437,25 @@
             "up_tree"   : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_MvaShiftUp01sigma",
             "down_tree" : "vbfTagDumper/trees/{sampleid}_13TeV_VBFDiJet_MvaShiftDown01sigma"
         }
+        /*
+        */
     },
     "options": {
         "label": [
-            "#scale[1.2]{#bf{CMS}} #it{Preliminary}",
-            //"80 < m_{ee} < 100 GeV",
+            //"#scale[1.2]{#bf{CMS}} #it{Preliminary}",
+            //"80 < m_{ee} < 100 GeV"
             //"!EBEB R_{9} < 0.94"
-            "max(|#eta^{1}|,|#eta^{2}|) > 1.57",
-            "min(R_{9}^{1},R_{9}^{2}) < 0.94"
+//            "max(|#eta^{1}|,|#eta^{2}|) > 1.57",
+//            "min(R_{9}^{1},R_{9}^{2}) < 0.94"
 //            "max(|#eta^{1}|,|#eta^{2}|) < 1.44",
 //            "min(R_{9}^{1},R_{9}^{2}) > 0.94"
 //            "max(|#eta^{1}|,|#eta^{2}|) > 1.57",
 //            "min(R_{9}^{1},R_{9}^{2}) > 0.94"
 //            "max(|#eta^{1}|,|#eta^{2}|) < 1.44",
 //            "min(R_{9}^{1},R_{9}^{2}) < 0.94"
+//            "Barrel-Barrel",
+//            "R_{9} > 0.94"
+            
 
 
 
@@ -463,26 +469,49 @@
         //"kfactor": 0.9345,
         "intlumi": 35.9,
         //"kfactor": 0.9445,
-        //"kfactor": 0.934,
+//        "kfactor": 0.934,
         "kfactor": 0.92,
-        //"kfactor": 0.90,
-        //"kfactor": 0.935,
-        //"kfactor": 0.92, //MVA Cut
+//        "kfactor": 0.90,
+//        "kfactor": 0.935,
+//        "kfactor": 0.92, //MVA Cut
         "ratio_range": [0.8,1.34],
 	//"ratio_type" : "centred",
 	"ratio_type" : "default",
 	"ratioplot" : false ,
 	"categories" : [
+        {
+        "name":"inclusive",
+        "cut":"abs(weight)<=1",
+        "label":""
+        }
+        /*
+        */
+        /*
 	    {
-		"name":"inclusive" ,
-		"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) < 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) > 1.57))",
-//		"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) < 1.4442))",
-//		"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) > 1.57))",
-//		"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) < 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) < 1.4442))",
-		//"cut":"(abs(weight)<=1)",
+		"name":"EEEE_lowR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) < 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) > 1.57))",
 		"label":""
 	    }
-	   
+        */
+        /*
+	    {
+		"name":"EBEB_highR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) < 1.4442))",
+		"label":""
+	    }
+        */
+        /*
+	    {
+		"name":"EEEE_highR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) > 1.57))",
+		"label":""
+	    }
+        */
+        /*
+        */
+        /*
+	    {
+		"name":"EBEB_lowR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) < 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) < 1.4442))",
+		"label":""
+	    }
+        */
 	]
     }
     

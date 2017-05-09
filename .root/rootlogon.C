@@ -30,6 +30,9 @@ void declar_colors(){
   new TColor(137,192/255.,  57/255.,  43/255.,"pomegranate"   );
   new TColor(138,189/255., 195/255., 199/255.,"silver"        );
   new TColor(139,127/255., 140/255., 141/255.,"asbestos"      );
+  new TColor(140,0/255.,   79/255.,  191/255.,"dipho-pastel1" );
+  new TColor(141,138/255., 138/255., 185/255.,"dipho-pastel2" );
+  new TColor(142,251/255., 221/255., 221/255.,"dipho-pastel3" );
 }
 
 void setYacineStyle(){
