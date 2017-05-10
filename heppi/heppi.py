@@ -72,14 +72,14 @@ class utils:
                     ymin = hist.GetYaxis().GetXmin()
                     ymax = hist.GetYaxis().GetXmax()
                     if cut > hist.GetXaxis().GetXmin() or cut < hist.GetXaxis().GetXmax():
-                        line.DrawLine(cut,ymin,cut,ymax)
+                        line.DrawLine(cut,ymin,cut,ymax/2.)
                 elif axis == 'y':
                     xmin = hist.GetXaxis().GetXmin()
                     xmax = hist.GetXaxis().GetXmax()
                     if cut > hist.GetYaxis().GetXmin() or cut < hist.GetYaxis().GetXmax():
                         line.DrawLine(xmin,cut,xmax,cut)
                 else:
-                    line.DrawLine(xmin,cut,xmax,cut)
+                    line.DrawLine(xmin,cut,xmax/2.,cut)
 
 
     @staticmethod
@@ -595,7 +595,7 @@ class instack ():
             line.SetLineColor(129)
             line.SetLineStyle(7)
             line.SetLineWidth(2)
-            line.DrawLine(cat,miny,cat,maxy)
+            line.DrawLine(cat,miny,cat,maxy/400.)
     #---------------------------------------------------------
     def make_stat_progression(self,myHisto,systematics={},
                               systematic_only=True,
@@ -886,8 +886,8 @@ class instack ():
             variable.root_legend.SetNColumns(2)
             variable.root_legend.SetColumnSeparation(0)
         else:
-            variable.root_legend  = ROOT.TLegend(0.45, 0.7,
-                                        (1.00 - ROOT.gStyle.GetPadRightMargin()),
+            variable.root_legend  = ROOT.TLegend(0.48, 0.7,
+                                        (0.96 - ROOT.gStyle.GetPadRightMargin()),
                                         (0.96 - ROOT.gStyle.GetPadTopMargin()))
 
         variable.root_cutflow = self.variable_cutflow(variable.name,'')
@@ -1004,6 +1004,7 @@ class instack ():
                 hstack.Add(hist)
                 variable.root_histos.append(hist)
                 variable.root_legend.AddEntry( hist, sample.title, "f" )
+            variable.root_legend.SetFillColor(0)
                 # drawing
 
         c = None
@@ -1040,7 +1041,7 @@ class instack ():
             #_ymin_ = 1e-2
             #hack
             #_ymin_ = 0.001
-            _ymin_,_ymax_ = 10,1e7
+            _ymin_,_ymax_ = 1e2,1e6
             _htmp_.GetYaxis().SetRangeUser(_ymin_,_ymax_)
             ROOT.gPad.SetLogy()
         else:
@@ -1052,27 +1053,26 @@ class instack ():
 
         self.customizeHisto(_htmp_, self.options.ratioplot)
 
+
         _htmp_.Draw('hist')
-        hstack.Draw('hist,same')
-        (herrstat, herrsyst) = self.draw_error_band(hstack.GetStack().Last(),self.systematics)
-        herrstat.Draw('E2,same')
-        
-        systematic_label = "SigmaEoverEShift"
-        if len(self.systematics)!=0:
-            if _hard_code_ :
-                self.systematics[systematic_label].up_histo.SetLineColor(2)
-                self.systematics[systematic_label].down_histo.SetLineColor(2)
-                self.systematics[systematic_label].up_histo.Draw("same, hist")
-                self.systematics[systematic_label].down_histo.Draw("same, hist")
+
+        try :
+            (herrstat, herrsyst) = self.draw_error_band(hstack.GetStack().Last(),self.systematics)
+            herrstat.Draw('E2,same')
+            if len(self.systematics)!=0:herrsyst.Draw('E2,same')        
+            hstack.Draw('hist,same')
+            _htmp_line_ = hstack.GetStack().Last().Clone("h_clone_for_line")
+            _htmp_line_.SetFillStyle(0)
+            _htmp_line_.SetLineColor(1)
+            _htmp_line_.Draw('hist,same')
+            if len(self.systematics)>0:
+                variable.root_legend.AddEntry(herrsyst, "Simulation Stat. #oplus Syst.", "f" )
             else:
-                herrsyst.Draw('E2,same')
-                _htmp_line_ = hstack.GetStack().Last().Clone("h_clone_for_line")
-                _htmp_line_.SetFillStyle( 0 )
-                _htmp_line_.SetLineColor(1)
-                _htmp_line_.Draw('hist,same')
-
-
+                variable.root_legend.AddEntry(herrstat, "Simulation Stat. Uncert.", "f" )
+        except:
+            pass 
         hdata = None
+
         for h in variable.root_histos:
             if 'data' in h.GetName():
                 h.SetFillStyle(0)
@@ -1080,21 +1080,18 @@ class instack ():
                 hdata = h
             if 'signal' in h.GetName() or 'spectator' in h.GetName():
                 h.Draw('hist,same')
-        if len(self.systematics)>0:
-#            variable.root_legend.AddEntry(herrsyst, "Stat #oplus Syst", "f" )
-            variable.root_legend.AddEntry(herrsyst, "Simulation Stat. #oplus Syst.", "f" )
-        else:
-            variable.root_legend.AddEntry(herrstat, "Simulation Stat. Uncert.", "f" )
+
 
         # cosmetics
         utils.draw_cut_line(_htmp_,variable,'x')
         self.draw_categories(variable.boundaries, miny=_htmp_.GetMinimum(),maxy=_htmp_.GetMaximum())
         ROOT.gPad.RedrawAxis()
 
-        #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, 1e7)
-        #bb.SetFillColor(1)
-        #bb.SetFillColorAlpha(1,0.2)
-        #bb.Draw("same")
+        #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.107, 248000)
+        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, 1e6)
+        bb.SetFillColor(1)
+        bb.SetFillColorAlpha(1,0.2)
+        bb.Draw("same")
 
         # this is for the legend
         variable.root_legend.SetTextAlign( 12 )

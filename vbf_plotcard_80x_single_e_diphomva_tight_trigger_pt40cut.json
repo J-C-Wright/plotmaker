@@ -40,8 +40,8 @@
             "blind": "",
             "log"  : false,
             "norm" : false,
-            "title": "Diphoton MVA",
-            "boundaries":[0.107]
+            "title": "Diphoton MVA"//,
+            //"boundaries":[0.107]
         },
 	
         "dipho_sublead_ptoM": {

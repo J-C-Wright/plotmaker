@@ -8,11 +8,11 @@ cut_line_style             = 7
 #== error style
 error_band_color           = 142
 error_band_style           = 1001#3004
-error_band_opacity         = 0.7
+error_band_opacity         = 1.0
 
 syst_error_band_color      = 142
 syst_error_band_style      = 1001
-syst_error_band_opacity    = 0.7
+syst_error_band_opacity    = 1.0
 
 #== ratio plot style
 ratio_error_same           = False
@@ -20,7 +20,7 @@ ratio_syst_band_color      = 142
 ratio_syst_band_style      = 1001
 ratio_error_band_color     = 142
 ratio_error_band_style     = 1001
-ratio_error_band_opacity   = 0.7
+ratio_error_band_opacity   = 1.0
 ratio_draw_signal          = False
 ratio_precision_range      = [0, 2.6]
 ratio_plot_grid            = True
