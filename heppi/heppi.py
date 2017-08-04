@@ -106,7 +106,7 @@ class utils:
                            (ystart - shift - ROOT.gStyle.GetPadTopMargin()),s)
             shift = shift + settings.label_shift
     @staticmethod
-    def draw_cms_headlabel(label_left  ='#scale[1.2]{#bf{CMS}} #it{Preliminary}',
+    def draw_cms_headlabel(label_left  ='#scale[1.2]{#bf{CMS}}', #it{Preliminary}',
                            label_right ='#sqrt{s} = 13 TeV, L = 2.56 fb^{-1}'):
         tex_left  = ROOT.TLatex()
         tex_left.SetTextAlign (11);
@@ -121,7 +121,7 @@ class utils:
         tex_right.DrawLatexNDC(1-0.07,
                                1.01 - ROOT.gStyle.GetPadTopMargin(),label_right)
     @staticmethod
-    def scatter_cms_headlabel(label_left  ='#scale[1.2]{#bf{CMS}} #it{Preliminary}',
+    def scatter_cms_headlabel(label_left  ='#scale[1.2]{#bf{CMS}}', #it{Preliminary}',
                               label_right ='#sqrt{s} = 13 TeV, L = 2.56 fb^{-1}'):
         tex_left  = ROOT.TLatex()
         tex_left.SetTextAlign (11);
@@ -887,6 +887,7 @@ class instack ():
             variable.root_legend.SetColumnSeparation(0)
         else:
             variable.root_legend  = ROOT.TLegend(0.48, 0.7,
+            #variable.root_legend  = ROOT.TLegend(0.51, 0.7,
                                         (0.96 - ROOT.gStyle.GetPadRightMargin()),
                                         (0.96 - ROOT.gStyle.GetPadTopMargin()))
 
@@ -916,6 +917,7 @@ class instack ():
             if len(variable.blind) != 0 and sample.label == 'data':
                 _cutflow_ = '&&'.join([variable.root_cutflow[:-1],variable.blind+')'])
             if sample.label != 'data':
+                print '--->',sample.label, " : ", _cutflow_
                 sample.root_tree.Project(
                     'h_' + variable.name + variable.hist,
                     variable.formula,
@@ -973,7 +975,10 @@ class instack ():
             hist.SetTitle(";" + variable.title + ";entries")
             if ('signal'==sample.label) or ('spectator'==sample.label):
                 hist.SetLineColor(sample.color)
-                hist.SetLineStyle(1)
+                if sample.name == 'ggH':
+                    hist.SetLineStyle(2)
+                else:
+                    hist.SetLineStyle(1)
                 hist.SetLineWidth(2)
                 hist.SetFillStyle(0)
                 hist.SetName(hist.GetName() + '_' + sample.label)
@@ -997,7 +1002,6 @@ class instack ():
                 variable.root_histos.append(hist)
             if 'background' in sample.label:
                 hist.SetLineColor(ROOT.kBlack)
-                #hist.SetFillColor(sample.color)
                 hist.SetFillColorAlpha(sample.color,0.5)
                 hist.SetLineWidth(2)
                 hist.SetName(hist.GetName() + '_background')
@@ -1038,10 +1042,11 @@ class instack ():
                 _ymin_ = (0.01 - 0.003) if _ymin_ <= 0 else _ymin_
                 _ymax_ = hstack.GetMaximum()*1000
 
-            #_ymin_ = 1e-2
+            #_ymin_ = 1e2
+            #_ymax_ = 1e6
             #hack
             #_ymin_ = 0.001
-            _ymin_,_ymax_ = 1e2,1e6
+            _ymin_,_ymax_ = 0.1,1e5
             _htmp_.GetYaxis().SetRangeUser(_ymin_,_ymax_)
             ROOT.gPad.SetLogy()
         else:
@@ -1058,17 +1063,17 @@ class instack ():
 
         try :
             (herrstat, herrsyst) = self.draw_error_band(hstack.GetStack().Last(),self.systematics)
+            hstack.Draw('hist,same')
             herrstat.Draw('E2,same')
             if len(self.systematics)!=0:herrsyst.Draw('E2,same')        
-            hstack.Draw('hist,same')
             _htmp_line_ = hstack.GetStack().Last().Clone("h_clone_for_line")
             _htmp_line_.SetFillStyle(0)
             _htmp_line_.SetLineColor(1)
             _htmp_line_.Draw('hist,same')
-            if len(self.systematics)>0:
-                variable.root_legend.AddEntry(herrsyst, "Simulation Stat. #oplus Syst.", "f" )
-            else:
-                variable.root_legend.AddEntry(herrstat, "Simulation Stat. Uncert.", "f" )
+#            if len(self.systematics)>0:
+#                variable.root_legend.AddEntry(herrsyst, "Simulation Stat. #oplus Syst.", "f" )
+#            else:
+#                variable.root_legend.AddEntry(herrstat, "Simulation Stat. Uncert.", "f" )
         except:
             pass 
         hdata = None
@@ -1079,16 +1084,26 @@ class instack ():
                 h.Draw('E,same')
                 hdata = h
             if 'signal' in h.GetName() or 'spectator' in h.GetName():
+                print h.GetName()
+                for i in range(1,h.GetSize()-1):
+                    print 'Bin%d: %f'%(i,h.GetBinContent(i)),
+                print ''
                 h.Draw('hist,same')
 
-
+        try:
+            if len(self.systematics)>0:
+                variable.root_legend.AddEntry(herrsyst, "Simulation Stat. #oplus Syst.", "f" )
+            else:
+                variable.root_legend.AddEntry(herrstat, "Simulation Stat. Uncert.", "f" )
+        except:
+            pass 
         # cosmetics
         utils.draw_cut_line(_htmp_,variable,'x')
         self.draw_categories(variable.boundaries, miny=_htmp_.GetMinimum(),maxy=_htmp_.GetMaximum())
         ROOT.gPad.RedrawAxis()
 
-        #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.107, 248000)
-        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.441, 1e6)
+        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.107, 248000)
+        #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.434212, 1e5)
         bb.SetFillColor(1)
         bb.SetFillColorAlpha(1,0.2)
         bb.Draw("same")
