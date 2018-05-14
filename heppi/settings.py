@@ -26,11 +26,11 @@ ratio_precision_range      = [0, 2.6]
 ratio_plot_grid            = True
 #== formatting style
 text_font                  = 43
-text_size                  = 25
+text_size                  = 20
 label_shift                = 0.055
 canvas_width               = 700
 canvas_height              = 700+150
-two_colomn_legend          = False
+two_colomn_legend          = True
 
 #=== output files
-plot_formats              = ["pdf"]#,"png", "C"] # ["pdf","png", "root", "eps"]
+plot_formats              = ["pdf","root"]#,"png", "C"] # ["pdf","png", "root", "eps"]

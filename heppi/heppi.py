@@ -834,26 +834,26 @@ class instack ():
         return c
     #---------------------------------------------------------
     def customizeHisto(self, hist, ratioplot = True):
-        hist.GetYaxis().SetTitleSize  (25)
+        hist.GetYaxis().SetTitleSize  (20)
         hist.GetYaxis().SetTitleFont  (43)
         hist.GetYaxis().SetTitleOffset(2.0)
         hist.GetYaxis().SetLabelFont  (43)
-        hist.GetYaxis().SetLabelSize  (25)
+        hist.GetYaxis().SetLabelSize  (20)
         ROOT.TGaxis.SetExponentOffset(-0.075,-0.02)
         if ratioplot :
-            hist.GetXaxis().SetTitleSize  (25)
+            hist.GetXaxis().SetTitleSize  (20)
             hist.GetXaxis().SetTitleFont  (43)
             hist.GetXaxis().SetTitleOffset(3.5)
             hist.GetXaxis().SetLabelOffset(0.02)
             hist.GetXaxis().SetLabelFont  (43)
-            hist.GetXaxis().SetLabelSize  (25)
+            hist.GetXaxis().SetLabelSize  (20)
         else:
-            hist.GetXaxis().SetTitleSize  (25)
+            hist.GetXaxis().SetTitleSize  (20)
             hist.GetXaxis().SetTitleFont  (43)
             hist.GetXaxis().SetTitleOffset(1.5)
             hist.GetXaxis().SetLabelOffset(0.01)
             hist.GetXaxis().SetLabelFont  (43)
-            hist.GetXaxis().SetLabelSize  (25)
+            hist.GetXaxis().SetLabelSize  (20)
     #---------------------------------------------------------
     def test_tree_book():
         for sam in samples:
@@ -1046,14 +1046,15 @@ class instack ():
             #_ymax_ = 1e6
             #hack
             #_ymin_ = 0.001
-            _ymin_,_ymax_ = 0.1,1e5
+            #_ymin_,_ymax_ = 0.1,1e5
+            #_ymin_,_ymax_ = 1e2,1e6
             _htmp_.GetYaxis().SetRangeUser(_ymin_,_ymax_)
             ROOT.gPad.SetLogy()
         else:
             _ymin_ = 0
             _ymax_ = _ymax_ + _ymax_ * 0.5
             #hack
-            _ymin_ = 0.001
+            #_ymin_ = 0.001
             _htmp_.GetYaxis().SetRangeUser(_ymin_,_ymax_)
 
         self.customizeHisto(_htmp_, self.options.ratioplot)
@@ -1102,12 +1103,13 @@ class instack ():
         self.draw_categories(variable.boundaries, miny=_htmp_.GetMinimum(),maxy=_htmp_.GetMaximum())
         ROOT.gPad.RedrawAxis()
 
-        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.107, 248000)
+#       #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.107, 248000)
         #bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.434212, 1e5)
-        bb.SetFillColor(1)
-        bb.SetFillColorAlpha(1,0.2)
-        bb.Draw("same")
-
+#        bb =  ROOT.TBox(_htmp_.GetXaxis().GetXmin(), _htmp_.GetYaxis().GetXmin(),0.434212, 1e6)
+#        bb.SetFillColor(1)
+#        bb.SetFillColorAlpha(1,0.2)
+#        bb.Draw("same")
+#
         # this is for the legend
         variable.root_legend.SetTextAlign( 12 )
         variable.root_legend.SetTextFont ( 43 )
@@ -1189,6 +1191,7 @@ class instack ():
             line.Draw()
             ROOT.SetOwnership(line,0)
             ratioHist.Draw('same')
+            ROOT.gPad.RedrawAxis() 
             print 'forgetting the ratio plot ....'
         # concidence
         self.draw_categories(variable.boundaries,
@@ -1315,6 +1318,8 @@ class instack ():
             seff = hsig.Integral(ibin,hsig.GetNbinsX())/float(hsig.Integral())
             roc.SetPoint (ibin+1,beff,seff)
         roc.SetPoint (hsig.GetNbinsX()+2,0,0)
+        #roc.GetYaxis().SetTitleSize(25)
+        #roc.GetXaxis().SetTitleSize(25)
         roc.GetYaxis().SetTitleSize(25)
         roc.GetXaxis().SetTitleSize(25)
         roc.GetYaxis().SetTitleOffset (1)

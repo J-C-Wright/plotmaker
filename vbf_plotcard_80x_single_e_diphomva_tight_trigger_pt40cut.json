@@ -42,7 +42,7 @@
             "norm" : false,
             //"title": "Diphoton MVA"//,
             //"title": "Transformed score of the diphoton BDT"
-            "title": "Diphoton BDT value"
+            "title": "Diphoton BDT score"
             //"boundaries":[0.107]
         },
 	
@@ -425,7 +425,8 @@
 //            "max(|#eta^{1}|,|#eta^{2}|) < 1.44",
 //            "min(R_{9}^{1},R_{9}^{2}) < 0.94"
             //"Barrel-Barrel",
-            //"R_{9} > 0.94"
+            "Not Barrel-Barrel",
+            "R_{9} > 0.94"
             
 
 
@@ -456,7 +457,7 @@
         "name":"inclusive",
         "cut":"1",
         "label":""
-        }
+        },
         /*
         */
         /*
@@ -465,17 +466,21 @@
 		"label":""
 	    }
         */
-        /*
 	    {
 		"name":"EBEB_highR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) < 1.4442))",
 		"label":""
-	    }
-        */
+	    },
+	    {
+		"name":"notEBEB_highR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && !(min(abs(leadSCeta),abs(subleadSCeta)) < 1.4442)))",
+		"label":""
+	    },
         /*
+        */
 	    {
 		"name":"EEEE_highR9" ,"cut":"(abs(weight)<=1 && (min(leadR9,subleadR9) > 0.94 && max(abs(leadSCeta),abs(subleadSCeta)) > 1.57))",
 		"label":""
 	    }
+        /*
         */
         /*
         */
